@@ -1,7 +1,6 @@
 # Midterm Exam Preparation
 
-The problems below are similar to what you can expect for the midterm,
-though some are slightly harder than what I'll ask in the exam.
+The problems below are similar to what you can expect for the midterm exam.
 
 
 ## Regular Expressions and Grammars
