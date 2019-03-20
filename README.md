@@ -261,7 +261,7 @@ property should be maintained by all the considered operations.
    split: int -> tree -> tree * bool * tree
    ```
        
-   such that `split t x` returns `(ts, present, tg)` where `ts` is
+   such that `split x t` returns `(ts, present, tg)` where `ts` is
    a tree that contains the set of all values in `t` that are
    strictly smaller than `x`, `tg` is a tree that contains all
    values in `t` that are strictly greater than `x`, and `present`
