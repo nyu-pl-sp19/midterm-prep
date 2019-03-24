@@ -426,7 +426,7 @@ a return value and its return type can be changed to `void`.
      
    ```ocaml
    let encode xs = 
-     List.map (fun pack -> (List.hd pack, List.len pack)) (pack xs)
+     List.map (fun pack -> (List.hd pack, List.length pack)) (pack xs)
    ```
    </p>
    </details>
