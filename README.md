@@ -390,8 +390,8 @@ void delete_list(list_node* L) {
    memory), now its output is strangely corrupted, and Brad goes back
    to Janet for advice. What will she tell him this time?
 
-   <details><summary>Solution</summary>
-   <p>
+<details><summary>Solution</summary>
+<p>
    
    1. Evidently Brad assumed that the dynamically allocated memory in
       his program would be garbage collected as in a Java
@@ -425,8 +425,8 @@ void delete_list(list_node* L) {
       memory pointed to by the dangling references has been
       reallocated for other purposes.
 
-   </p>
-   </details>
+</p>
+</details>
 
 ## OCaml Programming with Lists
 
