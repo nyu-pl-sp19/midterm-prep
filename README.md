@@ -313,8 +313,119 @@ a return value and its return type can be changed to `void`.
 </p>
 </details>
 
+## Memory Management (continued)
 
+As part of the development team at MumbleTech.com, Janet has written a
+list manipulation library for C that contains, among other things, the
+following code
+
+```c
+typedef struct list_node {
+  void* data;
+  struct list_node* next;
+} 
+
+list_node;
+list_node* insert(void* d, list_node* L) {
+  list_node* t = (list_node*) malloc(sizeof(list_node));
+  t->data = d;
+  t->next = L;
+  return t;
+}
+
+list_node* reverse(list_node* L) {
+  list_node* rtn = 0;
+  while (L) {
+    rtn = insert(L->data, rtn);
+    L = L->next;
+  }
+  return rtn;
+}
+
+void delete_list(list_node* L) {
+  while (L) {
+    list_node* t = L;
+    L = L->next;
+    free(t->data);
+    free(t);
+  }
+}
+```
+
+1. Accustomed to Java, new team member Brad includes the following
+   code in the main loop of his program:
+
+   ```c
+   list_node* L = 0;
+
+   while (more_widgets()) {
+     L = insert(next_widget(), L);
+   }
    
+   L = reverse(L);
+   ```
+
+   Sadly, after running for a while, Brad's program always runs out of
+   memory and crashes. Explain what's going wrong.
+
+2. After Janet patiently explains the problem to him, Brad gives it another
+   try:
+
+   ```c
+   list_node* L = 0;
+
+   while (more_widgets()) {
+     L = insert(next_widget(), L);
+   }
+   
+   list_node* T = reverse(L);
+   
+   delete_list(L);
+   
+   L = T;
+   ```
+   
+   This seems to solve the insufficient memory problem, but where the
+   program used to produce correct results (before running out of
+   memory), now its output is strangely corrupted, and Brad goes back
+   to Janet for advice. What will she tell him this time?
+
+   <details><summary>Solution</summary>
+   <p>
+   
+1. Evidently Brad assumed that the dynamically allocated memory in his
+   program would be garbage collected as in a Java program. This is
+   not the case. The function call `reverse(L)` in Brad's program does
+   not reverse the list `L` *in place*.  Instead, it creates a new
+   list with the reversed data elements from the list `L`. The
+   assignment to `L` on the last line of the code snippet overwrites
+   the only pointer to the old list `L` with the pointer pointing to
+   the head of the reversed list that is returned by `reverse`. The
+   list `L` thus remains in memory without being reachable from any
+   stack pointer or global pointer via pointer look-ups. That is, the
+   list can never be deallocated. The program therefore leaks
+   memory. If this code is executed many times, the memory leak will
+   accumulate, using up all available heap memory, which will cause
+   the program to crash eventually with an "out of memory" error.
+  
+2. The problem with Brad's new program is that the data elements
+   stored in list `L` are shared with the reversed list `T` created by
+   `reverse`. Inspecting the code of `delete_list` reveals that this
+   function does not just dispose the memory that is allocated for the
+   nodes constituting list `L`, but also the memory of the actual data
+   elements pointed to by the `data` pointers in each node of the
+   list.  Hence, after the call to `delete_list(L)`, all `data`
+   pointers in the nodes of the reversed list `T` are dangling, i.e.,
+   they point to unallocated memory regions in the heap.  If Brad's
+   program later dereferences any of these dangling pointers, the
+   program may crash, e.g. with a segmentation fault because it
+   accesses unallocated memory, or it may corrupt the state of the
+   heap because, in the meantime, the memory pointed to by the
+   dangling references has been reallocated for other purposes.
+
+   </p>
+   </details>
+
 ## OCaml Programming with Lists
 
 1. Write an OCaml function 
