@@ -610,7 +610,7 @@ property should be maintained by all the considered operations.
        (ls, present, Node (y, lg, r))
      else if x > y then
        let rs, present, rg = split x r in
-       (Node (y, l, rs), present, lg)
+       (Node (y, l, rs), present, rg)
      else (l, true, r)
    ```
    </p>
